@@ -26,8 +26,25 @@ class BatchStatus(str, Enum):
     HEALTHY = "HEALTHY"         # >30 days remaining
 
 
+_simulated_today: date | None = None
+
+
+def set_simulated_today(d: date | None) -> None:
+    """Set or clear the globally simulated current date."""
+    global _simulated_today
+    _simulated_today = d
+
+
+def reset_simulated_today() -> None:
+    """Reset simulated date back to real system date."""
+    global _simulated_today
+    _simulated_today = None
+
+
 def get_today() -> date:
-    """Return the current date. Override in tests for determinism."""
+    """Return current date, respecting any simulated date set via clock."""
+    if _simulated_today is not None:
+        return _simulated_today
     return date.today()
 
 
@@ -37,8 +54,15 @@ def is_expired(expiry_date: date, today: date | None = None) -> bool:
     return expiry_date < today
 
 
-def is_sellable(expiry_date: date, quantity: int, today: date | None = None) -> bool:
-    """A batch is sellable if it is not expired and has stock."""
+def is_sellable(
+    expiry_date: date,
+    quantity: int,
+    today: date | None = None,
+    is_quarantined: bool = False,
+) -> bool:
+    """A batch is sellable if it is not expired, not quarantined, and has stock."""
+    if is_quarantined:
+        return False
     today = today or get_today()
     return not is_expired(expiry_date, today) and quantity > 0
 

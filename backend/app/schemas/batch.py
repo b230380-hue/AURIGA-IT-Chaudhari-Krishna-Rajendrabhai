@@ -49,5 +49,8 @@ class BatchResponse(BaseModel):
     status: str | None = None
     days_until_expiry: int | None = None
     fefo_priority: int | None = None
+    is_quarantined: bool = False
+    is_flagged: bool = False
+    quarantine_reason: str | None = None
 
     model_config = {"from_attributes": True}

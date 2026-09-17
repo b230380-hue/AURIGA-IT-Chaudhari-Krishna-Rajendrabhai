@@ -12,7 +12,15 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.database import init_db
-from app.api import medicines, dispensing, alerts, dashboard
+from app.api import (
+    medicines,
+    dispensing,
+    alerts,
+    dashboard,
+    clock,
+    import_batch,
+    outbox,
+)
 
 # Configure logging
 logging.basicConfig(
@@ -36,7 +44,7 @@ app = FastAPI(
     title=settings.APP_NAME,
     description=(
         "Expiry-Aware Pharmacy Inventory — FEFO dispensing, "
-        "sellable stock tracking, and batch traceability."
+        "sellable stock tracking, batch traceability, and automated daily controls."
     ),
     version=settings.APP_VERSION,
     lifespan=lifespan,
@@ -56,6 +64,9 @@ app.include_router(medicines.router)
 app.include_router(dispensing.router)
 app.include_router(alerts.router)
 app.include_router(dashboard.router)
+app.include_router(clock.router)
+app.include_router(import_batch.router)
+app.include_router(outbox.router)
 
 
 @app.get("/api/health", tags=["Health"])

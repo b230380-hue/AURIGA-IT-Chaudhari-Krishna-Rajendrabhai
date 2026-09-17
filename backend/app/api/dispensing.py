@@ -72,7 +72,10 @@ def execute_dispense(
       full allocation records are created for traceability.
     """
     try:
-        return fefo_service.dispense(db, medicine_id, data.quantity)
+        res = fefo_service.dispense(db, medicine_id, data.quantity)
+        from app.services.notification_service import check_and_trigger_reorder_alert
+        check_and_trigger_reorder_alert(db, medicine_id)
+        return res
     except ValueError as e:
         msg = str(e)
         if "MEDICINE_NOT_FOUND" in msg:

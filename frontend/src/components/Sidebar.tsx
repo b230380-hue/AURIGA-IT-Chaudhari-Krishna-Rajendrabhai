@@ -5,6 +5,8 @@ import {
   ArrowRightLeft,
   AlertTriangle,
   ClipboardList,
+  FileSpreadsheet,
+  Clock,
 } from 'lucide-react';
 
 export default function Sidebar() {
@@ -43,6 +45,20 @@ export default function Sidebar() {
         >
           <AlertTriangle />
           <span>Expiry Alerts</span>
+        </NavLink>
+        <NavLink
+          to="/import"
+          className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+        >
+          <FileSpreadsheet />
+          <span>Import Batches</span>
+        </NavLink>
+        <NavLink
+          to="/automation"
+          className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+        >
+          <Clock />
+          <span>Clock & Outbox</span>
         </NavLink>
         <NavLink
           to="/transactions"

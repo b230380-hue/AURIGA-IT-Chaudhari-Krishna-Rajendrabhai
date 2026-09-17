@@ -3,6 +3,7 @@
 from datetime import datetime, timezone
 
 from sqlalchemy import (
+    Boolean,
     CheckConstraint,
     Column,
     Date,
@@ -34,6 +35,9 @@ class Batch(Base):
     received_date = Column(Date, nullable=True)
     purchase_price = Column(Float, nullable=True)
     selling_price = Column(Float, nullable=True)
+    is_quarantined = Column(Boolean, nullable=False, default=False)
+    is_flagged = Column(Boolean, nullable=False, default=False)
+    quarantine_reason = Column(String(200), nullable=True)
     created_at = Column(
         DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
     )

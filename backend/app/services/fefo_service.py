@@ -43,6 +43,7 @@ def _get_batch_snapshots(db: Session, medicine_id: int) -> list[BatchSnapshot]:
             quantity=b.quantity,
             expiry_date=b.expiry_date,
             received_date=b.received_date,
+            is_quarantined=getattr(b, "is_quarantined", False),
         )
         for b in batches
     ]

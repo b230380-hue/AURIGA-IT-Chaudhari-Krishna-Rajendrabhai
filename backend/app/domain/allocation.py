@@ -27,6 +27,7 @@ class BatchSnapshot:
     quantity: int
     expiry_date: date
     received_date: date | None = None
+    is_quarantined: bool = False
 
 
 @dataclass
@@ -90,11 +91,13 @@ def plan_fefo_allocation(
 
     today = today or get_today()
 
-    # Step 1: Filter eligible batches
+    # Step 1: Filter eligible batches (not expired, not quarantined, quantity > 0)
     eligible = [
         b
         for b in batches
-        if not is_expired(b.expiry_date, today) and b.quantity > 0
+        if not is_expired(b.expiry_date, today)
+        and not getattr(b, "is_quarantined", False)
+        and b.quantity > 0
     ]
 
     # Step 2: Sort FEFO — expiry ASC, received ASC (None last), id ASC

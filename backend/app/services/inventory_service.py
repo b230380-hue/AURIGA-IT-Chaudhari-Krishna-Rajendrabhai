@@ -163,6 +163,9 @@ def get_batches_for_medicine(
             status=status.value,
             days_until_expiry=days_left,
             fefo_priority=priority,
+            is_quarantined=getattr(batch, "is_quarantined", False),
+            is_flagged=getattr(batch, "is_flagged", False),
+            quarantine_reason=getattr(batch, "quarantine_reason", None),
         )
         result.append(resp)
 
@@ -211,8 +214,9 @@ def get_medicine_stock(
 
     for batch in batches:
         physical_stock += batch.quantity
+        is_quar = getattr(batch, "is_quarantined", False)
 
-        if is_expired(batch.expiry_date, today):
+        if is_expired(batch.expiry_date, today) or is_quar:
             expired_stock += batch.quantity
             expired_batches += 1
         else:

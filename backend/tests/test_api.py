@@ -15,40 +15,6 @@ from app.models.medicine import Medicine
 from app.models.batch import Batch
 
 
-@pytest.fixture
-def test_client():
-    """Create test client with isolated database."""
-    engine = create_engine(
-        "sqlite:///:memory:",
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
-    )
-
-    @event.listens_for(engine, "connect")
-    def _set_pragma(conn, _):
-        cursor = conn.cursor()
-        cursor.execute("PRAGMA foreign_keys=ON")
-        cursor.close()
-
-    Base.metadata.create_all(bind=engine)
-    TestSession = sessionmaker(bind=engine)
-
-    def override_get_db():
-        db = TestSession()
-        try:
-            yield db
-        finally:
-            db.close()
-
-    app.dependency_overrides[get_db] = override_get_db
-    client = TestClient(app)
-
-    yield client
-
-    app.dependency_overrides.clear()
-    Base.metadata.drop_all(bind=engine)
-
-
 class TestHealthEndpoint:
     def test_health(self, test_client):
         resp = test_client.get("/api/health")

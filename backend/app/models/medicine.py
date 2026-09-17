@@ -20,6 +20,7 @@ class Medicine(Base):
     strength = Column(String(100), nullable=True)
     dosage_form = Column(String(100), nullable=True)
     sku = Column(String(100), nullable=True, unique=True)
+    reorder_threshold = Column(Integer, nullable=False, default=20)
     created_at = Column(
         DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
     )

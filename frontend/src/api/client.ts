@@ -13,6 +13,9 @@ import type {
   DispenseTransaction,
   ExpiryAlertResponse,
   DashboardData,
+  ClockReport,
+  ImportReport,
+  OutboxMessage,
 } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
@@ -78,8 +81,28 @@ export const getExpiryAlerts = (days = 30) =>
   api.get<ExpiryAlertResponse>('/alerts/expiry', { params: { days } }).then((r) => r.data);
 
 // ── Dashboard ─────────────────────────────────────────────────
-
 export const getDashboard = () =>
   api.get<DashboardData>('/dashboard').then((r) => r.data);
+
+// ── Clock & Automation (Level 1) ──────────────────────────────
+export const getClock = () =>
+  api.get<{ date: string; today: string }>('/clock').then((r) => r.data);
+
+export const postClock = (payload: { date?: string; days?: number } = {}) =>
+  api.post<ClockReport>('/clock', payload).then((r) => r.data);
+
+export const resetClock = () =>
+  api.post<ClockReport>('/clock/reset').then((r) => r.data);
+
+// ── Messy Batch Import (Level 2) ─────────────────────────────
+export const importBatches = (data: any) =>
+  api.post<ImportReport>('/batches/import', data).then((r) => r.data);
+
+// ── Outbox / Notifications (Level 3) ─────────────────────────
+export const getOutbox = () =>
+  api.get<OutboxMessage[]>('/outbox').then((r) => r.data);
+
+export const clearOutbox = () =>
+  api.delete<{ cleared: number; status: string }>('/outbox').then((r) => r.data);
 
 export default api;

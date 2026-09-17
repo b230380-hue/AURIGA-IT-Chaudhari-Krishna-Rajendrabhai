@@ -36,6 +36,42 @@ export interface Batch {
   status: string | null;
   days_until_expiry: number | null;
   fefo_priority: number | null;
+  is_quarantined?: boolean;
+  is_flagged?: boolean;
+  quarantine_reason?: string | null;
+}
+
+export interface ClockReport {
+  date: string;
+  quarantined: number;
+  quarantined_count?: number;
+  total_quarantined?: number;
+  flagged: number;
+  flagged_count?: number;
+  expiring_within_7_days?: number;
+  active_batches?: number;
+  reorder_alerts_triggered?: number;
+  report: string;
+}
+
+export interface ImportReport {
+  imported: number;
+  deduped: number;
+  rejected: number;
+  total_processed?: number;
+  errors: Array<{ row: number; reason: string }>;
+}
+
+export interface OutboxMessage {
+  id: number;
+  medicine_id: number;
+  medicine_name: string;
+  event: string;
+  message: string;
+  current_stock: number;
+  threshold: number;
+  status: string;
+  created_at: string;
 }
 
 export interface BatchCreate {

@@ -6,6 +6,8 @@ import MedicineDetailPage from './pages/MedicineDetailPage';
 import DispensePage from './pages/DispensePage';
 import AlertsPage from './pages/AlertsPage';
 import TransactionsPage from './pages/TransactionsPage';
+import ImportPage from './pages/ImportPage';
+import AutomationPage from './pages/AutomationPage';
 
 export default function App() {
   return (
@@ -17,6 +19,8 @@ export default function App() {
           <Route path="medicines/:id" element={<MedicineDetailPage />} />
           <Route path="dispense" element={<DispensePage />} />
           <Route path="alerts" element={<AlertsPage />} />
+          <Route path="import" element={<ImportPage />} />
+          <Route path="automation" element={<AutomationPage />} />
           <Route path="transactions" element={<TransactionsPage />} />
         </Route>
       </Routes>

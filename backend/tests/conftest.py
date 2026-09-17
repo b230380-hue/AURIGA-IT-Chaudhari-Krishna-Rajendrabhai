@@ -37,6 +37,47 @@ def db_session():
 
 
 @pytest.fixture
+def test_client():
+    """Create test client with isolated database using StaticPool."""
+    from fastapi.testclient import TestClient
+    from sqlalchemy.pool import StaticPool
+    from app.database import get_db
+    from app.main import app
+    from app.domain.expiry import reset_simulated_today
+
+    engine = create_engine(
+        "sqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+
+    @event.listens_for(engine, "connect")
+    def _set_pragma(conn, _):
+        cursor = conn.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
+
+    Base.metadata.create_all(bind=engine)
+    TestSession = sessionmaker(bind=engine)
+
+    def override_get_db():
+        db = TestSession()
+        try:
+            yield db
+        finally:
+            db.close()
+
+    app.dependency_overrides[get_db] = override_get_db
+    client = TestClient(app)
+
+    yield client
+
+    app.dependency_overrides.clear()
+    Base.metadata.drop_all(bind=engine)
+    reset_simulated_today()
+
+
+@pytest.fixture
 def today():
     """Fixed date for deterministic testing."""
     return date(2026, 9, 17)
