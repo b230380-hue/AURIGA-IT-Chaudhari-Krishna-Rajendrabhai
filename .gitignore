@@ -16,6 +16,8 @@ htmlcov/
 
 # SQLite
 *.db
+*.db-wal
+*.db-shm
 *.sqlite
 *.sqlite3
 
