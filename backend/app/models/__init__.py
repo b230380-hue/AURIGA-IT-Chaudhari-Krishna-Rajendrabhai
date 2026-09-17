@@ -5,6 +5,7 @@ from app.models.batch import Batch
 from app.models.dispense import DispenseTransaction, DispenseAllocation
 from app.models.clock import SystemClock
 from app.models.outbox import OutboxMessage
+from app.models.user import User, UserRole
 
 __all__ = [
     "Medicine",
@@ -13,4 +14,6 @@ __all__ = [
     "DispenseAllocation",
     "SystemClock",
     "OutboxMessage",
+    "User",
+    "UserRole",
 ]

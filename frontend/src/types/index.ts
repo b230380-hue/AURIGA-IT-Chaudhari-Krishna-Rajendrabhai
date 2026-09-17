@@ -74,6 +74,15 @@ export interface OutboxMessage {
   created_at: string;
 }
 
+export interface UserResponse {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+  is_active: boolean;
+  created_at?: string | null;
+}
+
 export interface BatchCreate {
   batch_number: string;
   quantity: number;

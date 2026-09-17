@@ -11,16 +11,44 @@ Usage:
 from datetime import date, timedelta
 
 from app.database import SessionLocal, init_db
-from app.models import Medicine, Batch, DispenseTransaction, DispenseAllocation
+from app.models import (
+    Medicine,
+    Batch,
+    DispenseTransaction,
+    DispenseAllocation,
+    User,
+    UserRole,
+)
+from app.core.security import hash_password
 
 
 def seed():
-    """Seed the database with demo medicines and batches."""
+    """Seed the database with demo medicines, batches, and user accounts."""
     init_db()
     db = SessionLocal()
 
     try:
-        # Check if already seeded
+        # Seed users if they don't exist
+        if db.query(User).count() == 0:
+            admin_user = User(
+                username="admin",
+                email="admin@pharmaflow.local",
+                hashed_password=hash_password("admin123"),
+                role=UserRole.ADMIN.value,
+                is_active=True,
+            )
+            pharmacist_user = User(
+                username="pharmacist",
+                email="pharmacist@pharmaflow.local",
+                hashed_password=hash_password("pharma123"),
+                role=UserRole.PHARMACIST.value,
+                is_active=True,
+            )
+            db.add_all([admin_user, pharmacist_user])
+            db.commit()
+            print("  Created default user accounts: admin (ADMIN), pharmacist (PHARMACIST)")
+
+        # Check if already seeded medicines
         existing = db.query(Medicine).count()
         if existing > 0:
             print(f"Database already has {existing} medicines. Skipping seed.")

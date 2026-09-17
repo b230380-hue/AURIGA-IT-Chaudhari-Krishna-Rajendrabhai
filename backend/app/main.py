@@ -20,6 +20,7 @@ from app.api import (
     clock,
     import_batch,
     outbox,
+    auth,
 )
 
 # Configure logging
@@ -67,6 +68,26 @@ app.include_router(dashboard.router)
 app.include_router(clock.router)
 app.include_router(import_batch.router)
 app.include_router(outbox.router)
+app.include_router(auth.router)
+
+
+@app.get("/", tags=["Root"])
+def root():
+    """Root endpoint welcoming visitors and providing API documentation links."""
+    return {
+        "app": settings.APP_NAME,
+        "version": settings.APP_VERSION,
+        "status": "online",
+        "message": "Welcome to PharmaFlow — Expiry-Aware Pharmacy Inventory API",
+        "docs_url": "/docs",
+        "redoc_url": "/redoc",
+        "health_check": "/api/health",
+        "authentication": {
+            "register": "/api/auth/register",
+            "login": "/api/auth/login",
+            "profile": "/api/auth/me",
+        },
+    }
 
 
 @app.get("/api/health", tags=["Health"])
